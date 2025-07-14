@@ -9,4 +9,6 @@ public interface ITournamentService
     public Task<bool> UpsertTournamentAsync(Tournament tournament);
 
     public Task<bool> ArchiveTournamentAsync(Tournament tournament);
+
+    public Task<IEnumerable<Tournament>> GetCurrentTournamentsAsync();
 }

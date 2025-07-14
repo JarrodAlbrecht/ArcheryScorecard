@@ -18,17 +18,17 @@ public class TournamentRepository : ITournamentRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<Tournament>> GetAllAsync()
+    public Task<List<Tournament>> GetAllTournamentsAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<Tournament>> GetArchivedAsync()
+    public Task<List<Tournament>> GetArchivedTournamentsAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<Tournament?> GetByIdAsync(Guid id)
+    public Task<Tournament?> GetTournamentsByIdAsync(Guid id)
     {
         throw new NotImplementedException();
     }

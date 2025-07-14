@@ -2,8 +2,8 @@
 
 public enum TournamentType
 {
-    Indoor,
-    Outdoor,
-    Field,
-    ThreeD
+    Indoor = 0,
+    Outdoor = 1,
+    Field = 2,
+    ThreeD = 3
 }

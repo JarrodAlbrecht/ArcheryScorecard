@@ -1,5 +1,4 @@
 ﻿using ArcheryScorecard.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ArcheryScorecard.Repository;

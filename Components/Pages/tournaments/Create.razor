@@ -1,15 +1,14 @@
-﻿@using ArcheryScorecard.Interfaces
+﻿@page "/tournaments/create"
+@using ArcheryScorecard.Interfaces
 @using ArcheryScorecard.Models
 @using ArcheryScorecard.Models.Enums
 
 @inject ITournamentService TournamentService
 @inject NavigationManager Navigation
-@page "/tournaments/create"
-
 
 <h3>Create New Tournament</h3>
 
-<EditForm Model="@tournament" OnValidSubmit="@HandleValidSubmit" FormName="CreateTournament">
+<EditForm Model="tournament" OnValidSubmit="HandleValidSubmit" FormName="CreateTournamentForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -20,8 +19,8 @@
 
     <div class="mb-3">
         <label for="type">Tournament Type</label>
-        <InputSelect id="type" class="form-control" @bind-Value="tournament.Type">
-            @foreach (TournamentType type in Enum.GetValues(typeof(TournamentType)))
+        <InputSelect id="type" class="form-control" @bind-Value="tournament.Type" TValue="TournamentType">
+            @foreach (var type in Enum.GetValues(typeof(TournamentType)).Cast<TournamentType>())
             {
                 <option value="@type">@type</option>
             }
@@ -30,8 +29,8 @@
 
     <div class="mb-3">
         <label for="bow">Bow Style</label>
-        <InputSelect id="bow" class="form-control" @bind-Value="tournament.BowStyle">
-            @foreach (BowStyle style in Enum.GetValues(typeof(BowStyle)))
+        <InputSelect id="bow" class="form-control" @bind-Value="tournament.BowStyle" TValue="BowStyle">
+            @foreach (var style in Enum.GetValues(typeof(BowStyle)).Cast<BowStyle>())
             {
                 <option value="@style">@style</option>
             }
@@ -68,18 +67,27 @@
     <button type="submit" class="btn btn-primary">Save Tournament</button>
 </EditForm>
 
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert alert-info mt-3">@feedbackMessage</div>
+}
+
 @code {
     private Tournament tournament = new()
     {
         Id = Guid.NewGuid(),
+        Name = string.Empty,
+        Type = TournamentType.Indoor,
+        BowStyle = BowStyle.Recurve,
+        Date = DateTime.Today,
         Archers = new(),
         ArcheryEnds = new(),
         TournamentShootingDistances = new(),
-        Rounds = new(),
-        Date = DateTime.Today
+        Rounds = new()
     };
 
     private int newDistance;
+    private string? feedbackMessage;
 
     private void AddDistance()
     {
@@ -95,9 +103,17 @@
         tournament.TournamentShootingDistances.Remove(dist);
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        // TODO: Save the tournament to state or database
-        Console.WriteLine($"Tournament '{tournament.Name}' created with {tournament.TournamentShootingDistances.Count} distances.");
+        bool success = await TournamentService.CreateTournamentAsync(tournament);
+        feedbackMessage = success
+            ? "Tournament saved successfully!"
+            : "Failed to save tournament.";
+
+        if (success)
+        {
+            Console.WriteLine($"Tournament '{tournament.Name}' saved.");
+            Navigation.NavigateTo("/tournaments/current");
+        }
     }
 }
