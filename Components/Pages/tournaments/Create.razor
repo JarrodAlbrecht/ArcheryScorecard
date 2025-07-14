@@ -1,11 +1,15 @@
-﻿@using ArcheryScorecard.Models
+﻿@using ArcheryScorecard.Interfaces
+@using ArcheryScorecard.Models
 @using ArcheryScorecard.Models.Enums
 
+@inject ITournamentService TournamentService
+@inject NavigationManager Navigation
 @page "/tournaments/create"
+
 
 <h3>Create New Tournament</h3>
 
-<EditForm Model="@tournament" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@tournament" OnValidSubmit="@HandleValidSubmit" FormName="CreateTournament">
     <DataAnnotationsValidator />
     <ValidationSummary />
 

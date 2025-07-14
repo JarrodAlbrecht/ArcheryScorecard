@@ -1,10 +1,21 @@
 using ArcheryScorecard.Components;
+using ArcheryScorecard.Interfaces;
+using ArcheryScorecard.Repository;
+using ArcheryScorecard.Services;
+
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddDbContext<ArcheryDbContext>(options =>
+    options.UseSqlite("Data Source=archery.db"));
+
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 
 var app = builder.Build();
 
