@@ -1,0 +1,99 @@
+﻿@using ArcheryScorecard.Models
+@using ArcheryScorecard.Models.Enums
+
+@page "/tournaments/create"
+
+<h3>Create New Tournament</h3>
+
+<EditForm Model="@tournament" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name">Tournament Name</label>
+        <InputText id="name" class="form-control" @bind-Value="tournament.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="type">Tournament Type</label>
+        <InputSelect id="type" class="form-control" @bind-Value="tournament.Type">
+            @foreach (TournamentType type in Enum.GetValues(typeof(TournamentType)))
+            {
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="bow">Bow Style</label>
+        <InputSelect id="bow" class="form-control" @bind-Value="tournament.BowStyle">
+            @foreach (BowStyle style in Enum.GetValues(typeof(BowStyle)))
+            {
+                <option value="@style">@style</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="date">Date</label>
+        <InputDate id="date" class="form-control" @bind-Value="tournament.Date" />
+    </div>
+
+    <div class="mb-3">
+        <label>Shooting Distance (meters)</label>
+        <InputNumber class="form-control" @bind-Value="newDistance" />
+        <button type="button" class="btn btn-secondary mt-1" @onclick="AddDistance">Add Distance</button>
+    </div>
+
+    @if (tournament.TournamentShootingDistances.Any())
+    {
+        <div class="mb-3">
+            <label>Distances Added:</label>
+            <ul>
+                @foreach (var d in tournament.TournamentShootingDistances)
+                {
+                    <li>
+                        @d m
+                        <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemoveDistance(d)">Remove</button>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Save Tournament</button>
+</EditForm>
+
+@code {
+    private Tournament tournament = new()
+    {
+        Id = Guid.NewGuid(),
+        Archers = new(),
+        ArcheryEnds = new(),
+        TournamentShootingDistances = new(),
+        Rounds = new(),
+        Date = DateTime.Today
+    };
+
+    private int newDistance;
+
+    private void AddDistance()
+    {
+        if (newDistance > 0 && !tournament.TournamentShootingDistances.Contains(newDistance))
+        {
+            tournament.TournamentShootingDistances.Add(newDistance);
+            newDistance = 0;
+        }
+    }
+
+    private void RemoveDistance(int dist)
+    {
+        tournament.TournamentShootingDistances.Remove(dist);
+    }
+
+    private void HandleValidSubmit()
+    {
+        // TODO: Save the tournament to state or database
+        Console.WriteLine($"Tournament '{tournament.Name}' created with {tournament.TournamentShootingDistances.Count} distances.");
+    }
+}
