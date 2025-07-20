@@ -1,0 +1,63 @@
+@page "/create"
+@rendermode InteractiveServer
+
+@using ArcheryScorecard.Models
+@using ArcheryScorecard.Enums
+@using ArcheryScorecard.Services
+
+@inject NavigationManager Navigation
+@inject ITournamentService TournamentService
+
+<h3>Create New Tournament</h3>
+
+<EditForm Model="tournament" OnValidSubmit="HandleValidSubmit" FormName="CreateTournamentForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">@tournament.Id</label>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tournament Name</label>
+        <InputText class="form-control" @bind-Value="tournament.TournamentName" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Date</label>
+        <InputDate class="form-control" @bind-Value="tournament.Date" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Event Type</label>
+        <InputSelect class="form-control" @bind-Value="tournament.EventType">
+            <option value="">-- Select Event Type --</option>
+            @foreach (var type in Enum.GetValues<EventType>())
+            {
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Complete Tournament Setup</button>
+</EditForm>
+
+@code {
+    private Tournament tournament = new();
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"Tournament created at: {DateTime.Now}, Hash: {tournament.GetHashCode()}, ID: {tournament.Id}");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        Console.WriteLine($"Submit Tournament Hash: {tournament.GetHashCode()}, ID: {tournament.Id}");
+
+        //bool success = await TournamentService.UpsertTournamentAsync(tournament);
+        Console.WriteLine($"Created Tournament: {tournament.TournamentName}");
+
+        // Navigate to list or edit page
+        Navigation.NavigateTo($"/tournaments/finalise/{tournament.Id}");
+    }
+}

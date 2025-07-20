@@ -1,0 +1,11 @@
+@page "/tournaments/finalise/{TournamentGuid:guid}"
+@using ArcheryScorecard.Models
+
+<h3>Complete Tournament Setup</h3>
+
+<p>@TournamentGuid</p>
+
+@code {
+    [Parameter]
+    public Guid TournamentGuid { get; set; }
+}

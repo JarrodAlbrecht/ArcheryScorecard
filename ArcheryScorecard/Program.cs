@@ -1,10 +1,15 @@
 using ArcheryScorecard.Components;
+using ArcheryScorecard.Repository;
+using ArcheryScorecard.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<ITournamentService, TournamentService>();
+builder.Services.AddSingleton<ITournamentRepository, TournamentRepository>();
 
 var app = builder.Build();
 
